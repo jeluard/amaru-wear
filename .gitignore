@@ -1,0 +1,51 @@
+# Android
+.gradle/
+.idea/
+*.iml
+local.properties
+build/
+captures/
+.externalNativeBuild
+.cxx
+*.apk
+*.ap_
+*.aab
+app/src/main/jniLibs/
+
+# Rust
+rust/target/
+rust/Cargo.lock
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+*.swp
+*.swo
+*~
+
+# Build artifacts
+app/build/
+
+# Large files (snapshots, databases)
+*.db
+*.db-journal
+*.cbor
+ledger.db/
+chain.db/
+snapshots/
+mithril-snapshots/
+
+# Temporary files
+*.tmp
+*.temp
+.temp/
+
+# NDK and SDK related
+ndk-download/
+
+# Environment files
+.env
+.env.local
+

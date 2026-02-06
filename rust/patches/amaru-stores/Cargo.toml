@@ -1,0 +1,26 @@
+[package]
+name = "amaru-stores"
+version = "0.1.0"
+edition = "2024"
+description = "A Cardano blockchain node implementation - stores"
+license = "Apache-2.0"
+authors = ["Amaru Maintainers <amaru@pragma.builders>"]
+repository = "https://github.com/pragma-org/amaru"
+
+[dependencies]
+# External dependencies
+hex = "0.4.3"
+rocksdb = { version = "0.24.0", default-features = false, features = ["bindgen-runtime", "snappy", "multi-threaded-cf"], optional = true }
+tracing = { version = "0.1.40", features = ["valuable"] }
+rand = { version = "0.9.2", optional = true }
+
+# Internal dependencies (from git)
+amaru-kernel = { git = "https://github.com/pragma-org/amaru", branch = "main" }
+amaru-ledger = { git = "https://github.com/pragma-org/amaru", branch = "main" }
+amaru-iter-borrow = { git = "https://github.com/pragma-org/amaru", branch = "main" }
+amaru-slot-arithmetic = { git = "https://github.com/pragma-org/amaru", branch = "main" }
+amaru-ouroboros-traits = { git = "https://github.com/pragma-org/amaru", branch = "main" }
+
+[features]
+default = ["rocksdb"]
+rocksdb = ["dep:rocksdb", "dep:rand"]

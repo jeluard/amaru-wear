@@ -1,0 +1,16 @@
+# Android-specific build configuration
+# Note: NDK provides versioned clang wrappers in toolchains/llvm/prebuilt/*/bin/
+
+# Environment variables for Android builds
+[env]
+# Workaround for RocksDB POSIX_MADV_* Android compatibility issue
+# See: https://github.com/rust-rocksdb/rust-rocksdb/issues/697
+CXXFLAGS_aarch64_linux_android = "-DPOSIX_MADV_NORMAL=0 -DPOSIX_MADV_RANDOM=1 -DPOSIX_MADV_SEQUENTIAL=2 -DPOSIX_MADV_WILLNEED=3 -DPOSIX_MADV_DONTNEED=4"
+CXXFLAGS_armv7_linux_androideabi = "-DPOSIX_MADV_NORMAL=0 -DPOSIX_MADV_RANDOM=1 -DPOSIX_MADV_SEQUENTIAL=2 -DPOSIX_MADV_WILLNEED=3 -DPOSIX_MADV_DONTNEED=4"
+
+# Android NDK configuration
+[target.aarch64-linux-android]
+rustflags = ["-C", "link-arg=-lc++_shared"]
+
+[target.armv7-linux-androideabi]
+rustflags = ["-C", "link-arg=-lc++_shared"]

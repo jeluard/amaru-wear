@@ -1,0 +1,47 @@
+[package]
+name = "amaru-wear"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+# Amaru core - match icarus configuration exactly
+amaru = { git = "https://github.com/pragma-org/amaru", branch = "main", default-features = false }
+amaru-kernel = { git = "https://github.com/pragma-org/amaru", branch = "main" }
+amaru-stores = { git = "https://github.com/pragma-org/amaru", branch = "main" }
+amaru-tracing-json = { git = "https://github.com/pragma-org/amaru", branch = "main" }
+
+# JNI
+jni = "0.21"
+
+# Async runtime - match icarus
+tokio = { version = "1.49", features = ["rt-multi-thread", "macros", "time", "sync"] }
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Tracing - match icarus
+tracing = "0.1"
+tracing-subscriber = "0.3"
+
+# Logging
+log = "0.4"
+android_logger = "0.14"
+
+# Error handling
+anyhow = "1.0"
+
+# Lazy statics
+
+# Patch amaru-stores to fix Android RocksDB hard link issue
+[patch."https://github.com/pragma-org/amaru"]
+amaru-stores = { path = "patches/amaru-stores" }
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+strip = true
