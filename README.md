@@ -1,7 +1,7 @@
 A WearOS application that displays the latest Cardano blockchain tip in real-time using [Amaru](https://github.com/pragma-org/amaru) node implementation.
 
 <p align="center" width="100%">
-<video src="[https://github.com/user-attachments/assets/a91c01d9-d570-4f31-bd33-cfe13a505c2b](https://github.com/user-attachments/assets/b52a01eb-843e-4f20-afc3-f5fecaa34fe3)" width="50%" controls></video>
+<video src="https://github.com/user-attachments/assets/b52a01eb-843e-4f20-afc3-f5fecaa34fe3" width="50%" controls></video>
 </p>
 
 ## 🚀 Quick Start
