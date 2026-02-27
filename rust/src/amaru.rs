@@ -28,6 +28,7 @@ pub async fn setup_amaru_config(network: NetworkName, data_dir: PathBuf) -> Opti
         ledger_store: StoreType::RocksDb(ledger_config),
         chain_store: StoreType::RocksDb(chain_config),
         migrate_chain_db: true,
+        listen_address: "0.0.0.0:3000".to_string(), // port 0 = OS picks a free port, avoids collisions
         ..Config::default()
     })
 }

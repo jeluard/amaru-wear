@@ -30,7 +30,7 @@ pub fn init_logger() {
 
 pub fn start_node(network: &str, data_dir: &str) -> i64 {
     info!("🚀 JNI: startNode called with network={}, data_dir={}", network, data_dir);
-    
+
     let network_name = match network.to_lowercase().as_str() {
         "mainnet" => NetworkName::Mainnet,
         "preprod" => NetworkName::Preprod,
@@ -40,9 +40,34 @@ pub fn start_node(network: &str, data_dir: &str) -> i64 {
             return -3;
         }
     };
-    
+
     let app_dir = PathBuf::from(data_dir);
-    
+
+    // Atomically check-and-set runtime: create and store in one lock hold to prevent TOCTOU races
+    let rt_clone = {
+        let mut r = match RUNTIME.lock() {
+            Ok(g) => g,
+            Err(e) => {
+                log::error!("Failed to lock runtime: {}", e);
+                return -5;
+            }
+        };
+        if r.is_some() {
+            log::error!("❌ startNode called while node is already running — this is a bug");
+            return -6;
+        }
+        let runtime = match Runtime::new() {
+            Ok(rt) => Arc::new(rt),
+            Err(e) => {
+                log::error!("Failed to create tokio runtime: {}", e);
+                return -4;
+            }
+        };
+        let clone = runtime.clone();
+        *r = Some(runtime);
+        clone
+    };
+
     // Set up tracing with JsonTraceCollector
     let collector = JsonTraceCollector::default();
     let layer = JsonLayer::new(collector.clone());
@@ -50,18 +75,7 @@ pub fn start_node(network: &str, data_dir: &str) -> i64 {
     let dispatch = Dispatch::new(subscriber);
     let guard = tracing::dispatcher::set_global_default(dispatch);
     mem::forget(guard);
-    
-    let runtime = match Runtime::new() {
-        Ok(rt) => Arc::new(rt),
-        Err(e) => {
-            log::error!("Failed to create tokio runtime: {}", e);
-            return -4;
-        }
-    };
-    
-    let rt_clone = runtime.clone();
-    let _ = RUNTIME.lock().map(|mut r| *r = Some(runtime));
-    
+
     // Start Amaru in background thread with its own runtime for network
     std::thread::Builder::new()
         .name("amaru-network".into())
@@ -108,7 +122,8 @@ pub fn start_node(network: &str, data_dir: &str) -> i64 {
                 
                 // Run network
                 if let Some(config) = setup_amaru_config(network_name, app_dir).await {
-                    info!("🔄 Starting network sync...");
+                    let listen_address = config.listen_address.clone();
+                    info!("🔄 Starting network sync (listening on {})...", listen_address);
                     set_sync_status(SyncStatus::Syncing);
                     
                     match build_and_run_network(config, None).await {
@@ -116,7 +131,7 @@ pub fn start_node(network: &str, data_dir: &str) -> i64 {
                             info!("✅ Network running");
                             running.join().await;
                         }
-                        Err(e) => log::error!("❌ Network error: {}", e),
+                        Err(e) => log::error!("❌ Network error on {}: {}", listen_address, e),
                     }
                 }
             });

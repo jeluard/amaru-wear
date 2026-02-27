@@ -63,6 +63,8 @@ class AmaruViewModel(private val context: Context) : ViewModel() {
                         -2L -> "Failed to get data directory"
                         -3L -> "Invalid network name"
                         -4L -> "Failed to create runtime"
+                        -5L -> "Failed to acquire runtime lock"
+                        -6L -> "startNode called twice — node already running"
                         else -> "Unknown error: $result"
                     }
                     _tipState.value = TipState.Error(errorMsg)
