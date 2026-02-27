@@ -41,6 +41,9 @@ setup: ## Initialize project environment (Java, Rust, Android SDK, NDK)
 launch: setup ## Build and launch APK on emulator
 	./scripts/build-and-launch.sh
 
+launch-clean: setup ## Build and launch APK on emulator, clearing ledger/consensus files
+	./scripts/build-and-launch.sh --clear-data
+
 ##@ deployment
 deploy: setup ## Build and deploy APK to real WearOS watch
 	./scripts/build-and-deploy.sh

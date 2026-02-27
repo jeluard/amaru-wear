@@ -16,6 +16,19 @@ NC='\033[0m' # No Color
 PACKAGE_NAME="com.amaruwear"
 ACTIVITY_NAME=".MainActivity"
 
+# Parse command line arguments
+CLEAR_DATA=false
+for arg in "$@"; do
+    case $arg in
+        --clear-data)
+            CLEAR_DATA=true
+            shift
+            ;;
+        *)
+            ;;
+    esac
+done
+
 echo -e "${BLUE}╔═══════════════════════════════════════════════════════╗${NC}"
 echo -e "${BLUE}║   Amaru Wear - Build & Launch Script               ║${NC}"
 echo -e "${BLUE}╚═══════════════════════════════════════════════════════╝${NC}"
@@ -269,6 +282,13 @@ fi
 # Get the first device
 DEVICE=$(echo "$RUNNING_DEVICES" | head -1)
 echo "Using device: $DEVICE"
+
+# Clear ledger/consensus data before uninstall (while package is still registered)
+if [ "$CLEAR_DATA" = true ]; then
+    print_step "Clearing ledger/consensus data..."
+    "$ADB" -s "$DEVICE" shell pm clear "$PACKAGE_NAME" 2>/dev/null || true
+    print_success "Ledger/consensus data cleared"
+fi
 
 # Uninstall old version if exists
 print_step "Uninstalling old version (if exists)..."
