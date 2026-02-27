@@ -8,7 +8,7 @@ mod amaru;
 pub mod jni_impl;
 
 #[no_mangle]
-pub extern "C" fn Java_com_example_amaruwear_AmaruBridge_initLogger(
+pub extern "C" fn Java_com_amaruwear_AmaruBridge_initLogger(
     _env: JNIEnv,
     _class: JClass,
 ) {
@@ -16,7 +16,7 @@ pub extern "C" fn Java_com_example_amaruwear_AmaruBridge_initLogger(
 }
 
 #[no_mangle]
-pub extern "C" fn Java_com_example_amaruwear_AmaruBridge_startNode(
+pub extern "C" fn Java_com_amaruwear_AmaruBridge_startNode(
     mut env: JNIEnv,
     _class: JClass,
     network: JString,
@@ -33,7 +33,7 @@ pub extern "C" fn Java_com_example_amaruwear_AmaruBridge_startNode(
 }
 
 #[no_mangle]
-pub extern "C" fn Java_com_example_amaruwear_AmaruBridge_stopNode(
+pub extern "C" fn Java_com_amaruwear_AmaruBridge_stopNode(
     _env: JNIEnv,
     _class: JClass,
 ) -> i64 {
@@ -41,7 +41,7 @@ pub extern "C" fn Java_com_example_amaruwear_AmaruBridge_stopNode(
 }
 
 #[no_mangle]
-pub extern "C" fn Java_com_example_amaruwear_AmaruBridge_getLatestTip(
+pub extern "C" fn Java_com_amaruwear_AmaruBridge_getLatestTip(
     env: JNIEnv,
     _class: JClass,
 ) -> jstring {
